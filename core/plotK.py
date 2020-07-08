@@ -35,7 +35,9 @@ def get_name(code):
     data_info = pd.read_csv(os.path.join(path_data_info, "行业分类.csv"))
     return data_info.loc[data_info['code'] == code, 'code_name'].values[0]
 
-def get_cache(mark):
+def get_cache(mark, clear_cache):
+    if clear_cache:
+        return None
     mark_cache_path = os.path.join(PROJECT_PATH, 'mark_cache', mark + '.csv')
     if os.path.exists(mark_cache_path):
         cache_data = pd.read_csv(mark_cache_path)
@@ -55,8 +57,8 @@ def save_html(mark, function, html):
         os.makedirs(path_mark_html)
     html.render(os.path.join(path_mark_html, mark + '.html'))
 
-def plot_mark(mark, function, start_date = '2010-01-01', mark_line_show = False):
-    cache_data = get_cache(mark)
+def plot_mark(mark, function, start_date = '2010-01-01', mark_line_show = False, clear_cache = False):
+    cache_data = get_cache(mark, clear_cache)
     path_data_info = os.path.join(PROJECT_PATH, 'data_info')
     mark_info = pd.read_csv(os.path.join(path_data_info, mark + ".csv"))
     tab = Tab()
