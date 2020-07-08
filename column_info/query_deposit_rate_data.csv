@@ -1,0 +1,12 @@
+参数名称|&|参数描述
+pubDate|&|发布日期
+demandDepositRate|&|活期存款(不定期)
+fixedDepositRate3Month|&|定期存款(三个月)
+fixedDepositRate6Month|&|定期存款(半年)
+fixedDepositRate1Year|&|定期存款整存整取(一年)
+fixedDepositRate2Year|&|定期存款整存整取(二年)
+fixedDepositRate3Year|&|定期存款整存整取(三年)
+fixedDepositRate5Year|&|定期存款整存整取(五年)
+installmentFixedDepositRate1Year|&|零存整取、整存零取、存本取息定期存款(一年)
+installmentFixedDepositRate3Year|&|零存整取、整存零取、存本取息定期存款(三年)
+installmentFixedDepositRate5Year|&|零存整取、整存零取、存本取息定期存款(五年)

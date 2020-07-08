@@ -1,0 +1,12 @@
+参数名称|&|参数描述
+code|&|证券代码
+performanceExpPubDate|&|业绩快报披露日
+performanceExpStatDate|&|业绩快报统计日期
+performanceExpUpdateDate|&|业绩快报披露日(最新)
+performanceExpressTotalAsset|&|业绩快报总资产
+performanceExpressNetAsset|&|业绩快报净资产
+performanceExpressEPSChgPct|&|业绩每股收益增长率
+performanceExpressROEWa|&|业绩快报净资产收益率ROE-加权
+performanceExpressEPSDiluted|&|业绩快报每股收益EPS-摊薄
+performanceExpressGRYOY|&|业绩快报营业总收入同比
+performanceExpressOPYOY|&|业绩快报营业利润同比

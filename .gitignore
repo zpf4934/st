@@ -1,0 +1,6 @@
+*.pyc
+*.html
+.idea/
+.ipynb_checkpoints/
+mark_html/
+mark_cache/

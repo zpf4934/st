@@ -1,0 +1,10 @@
+参数名称|&|参数描述
+date|&|日期
+shiborON|&|隔夜拆借利率
+shibor1W|&|1周拆放利率
+shibor2W|&|2周拆放利率
+shibor1M|&|1个月拆放利率
+shibor3M|&|3个月拆放利率
+shibor6M|&|6个月拆放利率
+shibor9M|&|9个月拆放利率
+shibor1Y|&|1年拆放利率
