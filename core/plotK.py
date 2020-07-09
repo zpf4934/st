@@ -6,7 +6,7 @@
 '''
 
 
-from .tools import ProfessionalKlineBrush, ProfessionalKlineChart
+from .tools import ProfessionalKlineBrush, ProfessionalKlineChart, Tools
 from .getData import Data
 
 import pandas as pd
@@ -17,8 +17,11 @@ import datetime
 import sys
 import emoji
 import time
-import logging
 
+import warnings
+warnings.filterwarnings("ignore")
+
+import logging
 logger = logging.getLogger('plotK')
 logger.setLevel(logging.ERROR)
 
@@ -57,37 +60,45 @@ def save_html(mark, function, html):
         os.makedirs(path_mark_html)
     html.render(os.path.join(path_mark_html, mark + '.html'))
 
-def plot_mark(mark, function, start_date = '2010-01-01', mark_line_show = False, clear_cache = False):
+
+def plot_mark(mark, function, start_date, mark_line_show = False, clear_cache = False):
     cache_data = get_cache(mark, clear_cache)
     path_data_info = os.path.join(PROJECT_PATH, 'data_info')
     mark_info = pd.read_csv(os.path.join(path_data_info, mark + ".csv"))
     tab = Tab()
+    tools = Tools()
+    width, height = tools.get_screen_size()
     i = 0
     start = time.time()
     for code in mark_info['指数代码']:
         i += 1
         print('\nDraw chart: {}'.format(mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0]))
         if function == 'plot_kline_brush':
-            draw = ProfessionalKlineBrush(title=mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0])
+            draw = ProfessionalKlineBrush(title=mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0],
+                                          width=width,
+                                          height=height)
         elif function == 'plot_kline_chart':
-            draw = ProfessionalKlineChart(mark_line_show = mark_line_show, title=mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0])
+            draw = ProfessionalKlineChart(mark_line_show = mark_line_show,
+                                          title=mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0],
+                                          width=width,
+                                          height=height)
         if cache_data is not None and cache_data[cache_data['code'] == code].size > 0:
             start_date = (pd.to_datetime(cache_data[cache_data['code'] == code]['date'].max()) + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         if start_date <= datetime.datetime.now().strftime('%Y-%m-%d'):
             data = Data(code, start_date)
             data.get_query_history_k_data_plus()
             data.logout()
-            if cache_data is not None and data.query_history_k_data_plus.size > 0 and cache_data[cache_data['code'] == code].size > 0:
-                data.query_history_k_data_plus = pd.concat([cache_data[cache_data['code'] == code], data.query_history_k_data_plus], ignore_index=True).sort_values(by='date')
-            elif cache_data is not None and data.query_history_k_data_plus.size == 0 and cache_data[cache_data['code'] == code].size > 0:
-                data.query_history_k_data_plus = cache_data[cache_data['code'] == code].sort_values(by='date')
-            elif cache_data is not None and data.query_history_k_data_plus.size == 0 and cache_data[cache_data['code'] == code].size == 0:
+            if cache_data is not None:
+                data.query_history_k_data_plus = pd.concat([cache_data[cache_data['code'] == code], data.query_history_k_data_plus],
+                                                            ignore_index=True).sort_values(by='date')
+            if data.query_history_k_data_plus.size == 0:
                 logger.warning('data.query_history_k_data_plus and cache_data is NULL')
-            data.query_history_k_data_plus.drop_duplicates(subset = ['date','code'], inplace = True)
-            chart = draw.draw(data.query_history_k_data_plus)
-            tab.add(chart, mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0])
-            cache_data = pd.concat([cache_data, data.query_history_k_data_plus], ignore_index=True)
-            cache_data.drop_duplicates(subset = ['date','code'], inplace = True)
+            else:
+                data.query_history_k_data_plus.drop_duplicates(subset = ['date','code'], inplace = True)
+                chart = draw.draw(data.query_history_k_data_plus)
+                tab.add(chart, mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0])
+                cache_data = pd.concat([cache_data, data.query_history_k_data_plus], ignore_index=True)
+                cache_data.drop_duplicates(subset = ['date','code'], inplace = True)
         else:
             logger.error("date is out of today!")
         clearout()
@@ -100,7 +111,7 @@ def plot_mark(mark, function, start_date = '2010-01-01', mark_line_show = False,
     return tab
 
 
-def plot_kline_brush(code = None, mark = None, start_date = None):
+def plot_kline_brush(code = None, mark = None, start_date = '2010-01-01'):
     '''
     :param code: 股票代码
     :param mark: 指数 [一级行业指数，主题指数，二级行业指数，价值指数，债券指数，基金指数，成长指数，策略指数，综合指数，规模指数]
@@ -122,7 +133,7 @@ def plot_kline_brush(code = None, mark = None, start_date = None):
         return tab
 
 
-def plot_kline_chart(code = None, mark = None, start_date = None, mark_line_show = False):
+def plot_kline_chart(code = None, mark = None, start_date = '2010-01-01', mark_line_show = False):
     '''
     :param code: 股票代码
     :param mark: 指数 [一级行业指数，主题指数，二级行业指数，价值指数，债券指数，基金指数，成长指数，策略指数，综合指数，规模指数]

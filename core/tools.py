@@ -5,28 +5,21 @@
 ==================================================
 '''
 
-import sys
-import json
-import gc
-import os
-import pandas as pd
-import numpy as np
-from tqdm import tqdm
-
-import seaborn as sns
-import mplfinance as mpf
-import matplotlib.pyplot as plt
-from matplotlib import ticker
-from matplotlib.pylab import date2num
-from workalendar.asia import China
+import warnings
 from typing import List, Sequence, Union
+
+import mplfinance as mpf
+import numpy as np
+import pandas as pd
+import sys
 from fbprophet import Prophet
 from fbprophet.diagnostics import performance_metrics
-from pyecharts.commons.utils import JsCode
 from pyecharts import options as opts
 from pyecharts.charts import Kline, Line, Bar, Grid, Scatter
+from pyecharts.commons.utils import JsCode
+from tqdm import tqdm
+from workalendar.asia import China
 
-import warnings
 warnings.filterwarnings("ignore")
 
 import logging
@@ -48,6 +41,15 @@ def plotK(data):
     mpf.plot(df, **kwargs, style='charles')
 
 class Tools():
+    def get_screen_size(self):
+        if sys.platform == 'linux' or sys.platform == 'darwin':
+            return '1000px', '700px'
+        else:
+            import win32api, win32con
+            width = int(win32api.GetSystemMetrics(win32con.SM_CXSCREEN) * 0.98)
+            height = int(win32api.GetSystemMetrics(win32con.SM_CYSCREEN) * 0.98)
+            return str(width) + 'px', str(height) + 'px'
+
     def calculate_ma(self, day_count: int, data):
         result: List[Union[float, str]] = []
         for i in range(len(data)):
@@ -176,8 +178,10 @@ class Tools():
             return data.tolist()
 
 class ProfessionalKlineBrush(Tools):
-    def __init__(self, title = "K线周期图表"):
+    def __init__(self, title = "K线周期图表", width="98%",height="700px"):
         self.title = title
+        self.width = width
+        self.height = height
 
     def split_data(self, data):
         category_data = []
@@ -370,8 +374,8 @@ class ProfessionalKlineBrush(Tools):
         # Grid Overlap + Bar
         grid_chart = Grid(
             init_opts=opts.InitOpts(
-                width="100%",
-                height="700px",
+                width=self.width,
+                height=self.height,
                 animation_opts=opts.AnimationOpts(animation=True),
             )
         )
@@ -399,9 +403,11 @@ class ProfessionalKlineBrush(Tools):
 
 
 class ProfessionalKlineChart(Tools):
-    def __init__(self, mark_line_show = False, title = "K线周期图表"):
+    def __init__(self, mark_line_show = False, title = "K线周期图表", width="98%",height="700px"):
         self.mark_line_show = mark_line_show
         self.title = title
+        self.width = width
+        self.height = height
 
     def init_data(self, data):
         df = data[['date','open','close','low','high','volume']]
@@ -752,7 +758,7 @@ class ProfessionalKlineChart(Tools):
         overlap_bar_line_2 = bar_2.overlap(line_2)
 
         # 最后的 Grid
-        grid_chart = Grid(init_opts=opts.InitOpts(width="100%", height="700px"))
+        grid_chart = Grid(init_opts=opts.InitOpts(width=self.width, height=self.height))
 
         # 这个是为了把 data.datas 这个数据写入到 html 中,还没想到怎么跨 series 传值
         # demo 中的代码也是用全局变量传的
@@ -905,8 +911,10 @@ class RestDay():
         return result
 
 class ProphetPlot():
-    def __init__(self, title = ""):
+    def __init__(self, title = "", width="98%",height="700px"):
         self.title = title
+        self.width = width
+        self.height = height
 
     def plot(self, m, forecast):
         diff_values = np.round(forecast['yhat_upper'] - forecast['yhat_lower'], 2).tolist()
@@ -953,7 +961,7 @@ class ProphetPlot():
             new_data = pd.merge(forecast, m.history, how='left', on='ds')[['ds', 'y']]
 
         scatter = (
-            Scatter(init_opts=opts.InitOpts(width="100%", height="700px"))
+            Scatter(init_opts=opts.InitOpts(width=self.width, height=self.height))
                 .add_xaxis(new_data['ds'].astype(str).tolist())
                 .add_yaxis(series_name="price",
                            y_axis=np.round(new_data['y'], 2).tolist(),
@@ -1069,7 +1077,7 @@ class ProphetPlot():
         new_data = pd.merge(forecast, m.history, how='left', on='ds')[['ds', 'y']]
 
         scatter = (
-            Scatter(init_opts=opts.InitOpts(width="100%", height="700px"))
+            Scatter(init_opts=opts.InitOpts(width=self.width, height=self.height))
                 .add_xaxis(new_data['ds'].astype(str).tolist())
                 .add_yaxis(series_name="price",
                            y_axis=np.round(new_data['y'], 2).tolist(),
@@ -1155,7 +1163,7 @@ class ProphetPlot():
         x_plt = df_none['horizon'].astype('timedelta64[ns]').astype(np.int64) / float(dt_conversions[i])
         x_plt_h = df_h['horizon'].astype('timedelta64[ns]').astype(np.int64) / float(dt_conversions[i])
         scatter = (
-            Scatter(init_opts=opts.InitOpts(width="100%", height="700px"))
+            Scatter(init_opts=opts.InitOpts(width=self.width, height=self.height))
                 .add_xaxis(x_plt.values.tolist())
                 .add_yaxis(series_name=metric,
                            y_axis=np.round(df_none[metric], 2).tolist(),

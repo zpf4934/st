@@ -10,6 +10,7 @@ import datetime
 import pandas as pd
 from fbprophet import Prophet
 from fbprophet.diagnostics import cross_validation, performance_metrics
+from pyecharts.charts import Page
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -31,9 +32,8 @@ class ProphetModel():
         self.performance = None
         self.plot = None
         self.point_plot = None
-        self.cross = None
+        self.cross_plot = None
         self.components = None
-        self.pre_plot = None
 
     def fit(self,df,growth='linear', changepoints=None, n_changepoints=25, changepoint_range=0.8, yearly_seasonality='auto',
             weekly_seasonality='auto', daily_seasonality='auto', holidays=None, seasonality_mode='additive',
@@ -62,5 +62,8 @@ class ProphetModel():
         self.cv_data = cross_validation(self.prophet, initial = initial, period = period, horizon = horizon)
         self.performance = performance_metrics(self.cv_data)
         if self.show_cross:
-            self.pre_plot = self.prophet_plot.plot(self.prophet, self.cv_data)
-            self.cross = self.prophet_plot.plot_cross_validation_metric(self.cv_data, self.metric)
+            pre_plot = self.prophet_plot.plot(self.prophet, self.cv_data)
+            cross = self.prophet_plot.plot_cross_validation_metric(self.cv_data, self.metric)
+            self.cross_plot = Page(layout=Page.SimplePageLayout)
+            self.cross_plot.add(pre_plot)
+            self.cross_plot.add(cross)
