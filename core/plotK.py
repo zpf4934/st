@@ -48,7 +48,7 @@ def get_cache(mark, clear_cache):
 def save_cache(mark, cache_data):
     mark_cache_path = os.path.join(PROJECT_PATH, 'mark_cache')
     if not os.path.exists(mark_cache_path):
-        os.makedirs(path_mark_html)
+        os.makedirs(mark_cache_path)
     cache_data.to_csv(os.path.join(mark_cache_path, mark + '.csv'), index = 0)
 
 def save_html(mark, function, html):
