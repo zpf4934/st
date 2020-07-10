@@ -4,15 +4,18 @@
 @Date   ：2020/7/8 11:57
 ==================================================
 '''
-from .tools import RestDay, ProphetPlot
-
 import datetime
 import pandas as pd
+import warnings
 from fbprophet import Prophet
 from fbprophet.diagnostics import cross_validation, performance_metrics
 from pyecharts.charts import Page
+from pyecharts.globals import CurrentConfig
 
-import warnings
+from .tools import RestDay, ProphetPlot
+
+CurrentConfig.ONLINE_HOST = "resources/assets/"
+
 warnings.filterwarnings("ignore")
 
 class ProphetModel():

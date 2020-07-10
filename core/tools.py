@@ -5,22 +5,24 @@
 ==================================================
 '''
 
-import warnings
-from typing import List, Sequence, Union
-
 import mplfinance as mpf
 import numpy as np
 import pandas as pd
 import sys
+import warnings
 from fbprophet import Prophet
 from fbprophet.diagnostics import performance_metrics
 from pyecharts import options as opts
 from pyecharts.charts import Kline, Line, Bar, Grid, Scatter
 from pyecharts.commons.utils import JsCode
 from tqdm import tqdm
+from typing import List, Sequence, Union
 from workalendar.asia import China
+from pyecharts.globals import CurrentConfig
 
 warnings.filterwarnings("ignore")
+
+CurrentConfig.ONLINE_HOST = "resources/assets/"
 
 import logging
 logger = logging.getLogger('model')
@@ -41,15 +43,6 @@ def plotK(data):
     mpf.plot(df, **kwargs, style='charles')
 
 class Tools():
-    def get_screen_size(self):
-        if sys.platform == 'linux' or sys.platform == 'darwin':
-            return '1000px', '700px'
-        else:
-            import win32api, win32con
-            width = int(win32api.GetSystemMetrics(win32con.SM_CXSCREEN) * 0.98)
-            height = int(win32api.GetSystemMetrics(win32con.SM_CYSCREEN) * 0.98)
-            return str(width) + 'px', str(height) + 'px'
-
     def calculate_ma(self, day_count: int, data):
         result: List[Union[float, str]] = []
         for i in range(len(data)):

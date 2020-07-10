@@ -6,10 +6,10 @@
 '''
 
 import baostock as bs
-import pandas as pd
-import os
 import inspect
 import logging
+import os
+import pandas as pd
 
 logger = logging.getLogger('corefun')
 logger.setLevel(logging.ERROR)

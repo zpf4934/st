@@ -6,19 +6,20 @@
 '''
 
 
-from .tools import ProfessionalKlineBrush, ProfessionalKlineChart, Tools
-from .getData import Data
-
-import pandas as pd
-from pyecharts.charts import Tab
-import os
-import inspect
 import datetime
-import sys
 import emoji
+import html_sample as sample
+import inspect
+import os
+import pandas as pd
+import sys
 import time
-
 import warnings
+from bs4 import BeautifulSoup
+
+from .getData import Data
+from .tools import ProfessionalKlineBrush, ProfessionalKlineChart, Tools
+
 warnings.filterwarnings("ignore")
 
 import logging
@@ -54,34 +55,53 @@ def save_cache(mark, cache_data):
         os.makedirs(mark_cache_path)
     cache_data.to_csv(os.path.join(mark_cache_path, mark + '.csv'), index = 0)
 
-def save_html(mark, function, html):
-    path_mark_html = os.path.join(PROJECT_PATH, 'mark_html', function)
+def save_html(mark, function, html, name):
+    is_index = False
+    path_mark_html = os.path.join(PROJECT_PATH, 'mark_html', function, mark)
     if not os.path.exists(path_mark_html):
         os.makedirs(path_mark_html)
-    html.render(os.path.join(path_mark_html, mark + '.html'))
+    html.render('temp.html')
+    with open('temp.html', 'r') as fr:
+        html = fr.read()
+    if mark == '综合指数' and name == '上证指数':
+        is_index = True
+        if function == 'plot_kline_brush':
+            sample_html = sample.BRUSH_INDEX
+        elif function == 'plot_kline_chart':
+            sample_html = sample.CHART_INDEX
+    else:
+        sample_html = sample.HTML_SAMPLE
+    soup_sample = BeautifulSoup(sample_html, 'html.parser')
+    soup_html = BeautifulSoup(html, 'html.parser')
+    soup_html.head.replace_with(soup_sample.head)
+    soup.body.insert(0, soup_sample.header)
+    if is_index:
+        with open(os.path.join(PROJECT_PATH, 'mark_html', function + '.html'), 'wb') as fw:
+            fw.write(soup.prettify().encode('utf-8'))
+        soup_sample = BeautifulSoup(sample.HTML_SAMPLE, 'html.parser')
+        soup_html = BeautifulSoup(html, 'html.parser')
+        soup_html.head.replace_with(soup_sample.head)
+        soup.body.insert(0, soup_sample.header)
+    with open(os.path.join(path_mark_html, name + '.html'), 'wb') as fw:
+        fw.write(soup.prettify().encode('utf-8'))
+    os.remove('temp.html')
 
 
 def plot_mark(mark, function, start_date, mark_line_show = False, clear_cache = False):
     cache_data = get_cache(mark, clear_cache)
     path_data_info = os.path.join(PROJECT_PATH, 'data_info')
     mark_info = pd.read_csv(os.path.join(path_data_info, mark + ".csv"))
-    tab = Tab()
-    tools = Tools()
-    width, height = tools.get_screen_size()
     i = 0
     start = time.time()
     for code in mark_info['指数代码']:
+        name = mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0]
         i += 1
-        print('\nDraw chart: {}'.format(mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0]))
+        print('\nDraw chart: {}'.format(name))
         if function == 'plot_kline_brush':
-            draw = ProfessionalKlineBrush(title=mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0],
-                                          width=width,
-                                          height=height)
+            draw = ProfessionalKlineBrush(title=name)
         elif function == 'plot_kline_chart':
             draw = ProfessionalKlineChart(mark_line_show = mark_line_show,
-                                          title=mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0],
-                                          width=width,
-                                          height=height)
+                                          title=name)
         if cache_data is not None and cache_data[cache_data['code'] == code].size > 0:
             start_date = (pd.to_datetime(cache_data[cache_data['code'] == code]['date'].max()) + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         if start_date <= datetime.datetime.now().strftime('%Y-%m-%d'):
@@ -96,7 +116,7 @@ def plot_mark(mark, function, start_date, mark_line_show = False, clear_cache = 
             else:
                 data.query_history_k_data_plus.drop_duplicates(subset = ['date','code'], inplace = True)
                 chart = draw.draw(data.query_history_k_data_plus)
-                tab.add(chart, mark_info.loc[mark_info['指数代码']==code,'指数简称'].values[0])
+                save_html(mark, function, chart, name)
                 cache_data = pd.concat([cache_data, data.query_history_k_data_plus], ignore_index=True)
                 cache_data.drop_duplicates(subset = ['date','code'], inplace = True)
         else:
@@ -107,8 +127,6 @@ def plot_mark(mark, function, start_date, mark_line_show = False, clear_cache = 
               format(i, len(mark_info), emoji.emojize(':rocket:') * int(i * 30 / len(mark_info)) + '   ' * int((1 - (i / len(mark_info))) * 30),
                      float(i / len(mark_info) * 100), end - start), end='')
     save_cache(mark, cache_data)
-    save_html(mark, function, tab)
-    return tab
 
 
 def plot_kline_brush(code = None, mark = None, start_date = '2010-01-01'):
@@ -129,8 +147,8 @@ def plot_kline_brush(code = None, mark = None, start_date = '2010-01-01'):
         brush = ProfessionalKlineBrush(title=title)
         return brush.draw(data.query_history_k_data_plus)
     if mark:
-        tab = plot_mark(mark=mark, function='plot_kline_brush', start_date=start_date)
-        return tab
+        plot_mark(mark=mark, function='plot_kline_brush', start_date=start_date)
+        logger.info("draw chart finish")
 
 
 def plot_kline_chart(code = None, mark = None, start_date = '2010-01-01', mark_line_show = False):
@@ -151,5 +169,5 @@ def plot_kline_chart(code = None, mark = None, start_date = '2010-01-01', mark_l
         chart = ProfessionalKlineChart(mark_line_show = mark_line_show, title=title)
         return chart.draw(data.query_history_k_data_plus)
     if mark:
-        tab = plot_mark(mark=mark, function='plot_kline_chart', start_date=start_date, mark_line_show=mark_line_show)
-        return tab
+        plot_mark(mark=mark, function='plot_kline_chart', start_date=start_date, mark_line_show=mark_line_show)
+        logger.info("draw chart finish")

@@ -5,11 +5,12 @@
 ======================================
 '''
 
-from .coreFun import CoreFun
-import pandas as pd
-import numpy as np
 import inspect
+import numpy as np
 import os
+import pandas as pd
+
+from .coreFun import CoreFun
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)))
 
