@@ -1,0 +1,6 @@
+参数名称,参数描述,算法说明
+code,证券代码,
+dividOperateDate,除权除息日期,
+foreAdjustFactor,向前复权因子,除权除息日前一个交易日的收盘价/除权除息日最近的一个交易日的前收盘价
+backAdjustFactor,向后复权因子,除权除息日最近的一个交易日的前收盘价/除权除息日前一个交易日的收盘价
+adjustFactor,本次复权因子,

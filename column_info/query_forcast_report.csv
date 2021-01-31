@@ -1,0 +1,8 @@
+参数名称,参数描述
+code,证券代码
+profitForcastExpPubDate,业绩预告发布日期
+profitForcastExpStatDate,业绩预告统计日期
+profitForcastType,业绩预告类型
+profitForcastAbstract,业绩预告摘要
+profitForcastChgPctUp,预告归属于母公司的净利润增长上限(%)
+profitForcastChgPctDwn,预告归属于母公司的净利润增长下限(%)

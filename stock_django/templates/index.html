@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zxx">
+    <head>
+        <meta charset="utf-8">
+        <link href="{% static 'img/st.ico' %}" rel="shortcut icon"/>
+        <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'css/zhedie.css' %}" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/cs-select.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/cs-skin-underline.css' %}" />
+        <link type="text/css" href="{% static 'css/zzsc.css' %}" rel="stylesheet" />
+        <script type="text/javascript" src="{% static 'assets/echarts.min.js' %}"></script>
+        <title>Home</title>
+        <style type="text/css">
+            .sel_width {width: 12%}
+            table.hovertable {
+			font-family: verdana,arial,sans-serif;
+			font-size:11px;
+			color:#333333;
+			border-width: 1px;
+			border-color: #999999;
+			border-collapse: collapse;
+            }
+            table.hovertable th {
+                background-color:#c3dde0;
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #a9c6c9;
+            }
+            table.hovertable tr {
+                background-color:#d4e3e5;
+            }
+            table.hovertable td {
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #a9c6c9;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="out">
+            <div class="fade-in">
+                <div class="contain">
+                    <div class="one common"></div>
+                    <div class="two common"></div>
+                    <div class="three common"></div>
+                    <div class="four common"></div>
+                    <div class="five common"></div>
+                    <div class="six common"></div>
+                    <div class="seven common"></div>
+                    <div class="eight common"></div>
+                </div>
+                <div class="bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
+        <header id="header" class="header">
+            <div class="header_down container wrapper" style="width: 95%">
+                <form class="navbar-form" action="/core" method="post">
+                    {% csrf_token %}
+                            <ul>
+                                <li>
+                                    <div class="col-xs-4 sel_width weather__city form-group">
+                                            <input type="text" name="code" class="form-control" placeholder="code" required="required" style="width: 100%" \>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="col-xs-4 sel_width  weather__city form-group">
+                                            <input type="date" class="form-control" placeholder="start_date" name="start_date" value="2010-01-01" style="width: 100%" \>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="col-xs-4 sel_width  weather__city" style="text-align: center">
+                                        <section>
+                                            <select class="cs-select cs-skin-underline" name="target">
+                                                <option value="MACD">MACD</option>
+                                                <option value="KDJ">KDJ</option>
+                                                <option value="RSI">RSI</option>
+                                                <option value="BOLL">BOLL</option>
+                                                <option value="WR">WR</option>
+                                                <option value="DMI">DMI</option>
+                                                <option value="BBIBOLL">BBIBOLL</option>
+                                                <option value="ROC">ROC</option>
+                                                <option value="PSY">PSY</option>
+                                                <option value="OBV">OBV</option>
+                                                <option value="CCI">CCI</option>
+                                                <option value="TRIX">TRIX</option>
+                                                <option value="DMA">DMA</option>
+                                                <option value="EXPMA">EXPMA</option>
+                                                <option value="BIAS">BIAS</option>
+                                                <option value="VR">VR</option>
+                                            </select>
+                                        </section>
+                                    </div>
+                                </li>
+                                <li>
+                                <div class="col-xs-4 sel_width  weather__city" style="text-align: center">
+                                        <section>
+                                            <select class="cs-select cs-skin-underline" name="periods">
+                                                <option value=10>10</option>
+                                                <option value=30>30</option>
+                                                <option value=60>60</option>
+                                                <option value=90>90</option>
+                                                <option value=120>120</option>
+                                                <option value=150>150</option>
+                                                <option value=180>180</option>
+                                                <option value=360>360</option>
+                                            </select>
+                                        </section>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="col-xs-4 weather__city" style="width: 10%">
+                                        <div class="card folded today">
+                                            <div class="card_description">
+                                                <div class="title">绘图</div>
+                                            </div>
+                                            <div class="alarm_item top">
+                                                <div class="alarm_item_description">
+                                                    <button type="submit" name="KLine">
+                                                        KLine
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="alarm_item bottom">
+                                                <div class="alarm_item_description">
+                                                    <button type="submit" name="PEPB">
+                                                        PE&PB
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="col-xs-4 weather__city" style="width: 10%">
+                                        <div class="card folded today">
+                                            <div class="card_description">
+                                                <div class="title">模型</div>
+                                            </div>
+                                            <div class="alarm_item top">
+                                                <div class="alarm_item_description">
+                                                    <button type="submit" name="PROPHET">
+                                                        PROPHET
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="alarm_item bottom">
+                                                <div class="alarm_item_description">
+                                                    <button type="submit" name="XGB">
+                                                        XGB
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="alarm_item bottom">
+                                                <div class="alarm_item_description">
+                                                    <button type="submit" name="LSTM">
+                                                        LSTM
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="col-xs-4 weather__city" style="width: 10%">
+                                        <div class="card folded today">
+                                            <div class="card_description">
+                                                <div class="title">监控操作</div>
+                                            </div>
+                                            <div class="alarm_item top">
+                                                <div class="alarm_item_description">
+                                                    <button type="submit" name="del">
+                                                        删除监控
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="alarm_item bottom">
+                                                <div class="alarm_item_description">
+                                                    <button type="submit" name="add">
+                                                        添加监控
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                </form>
+                <ul>
+                    <li>
+                        <div class="col-xs-4 weather__city" style="width: 10%">
+                            <div class="card folded today">
+                                <div class="card_description">
+                                    <div class="title">信息查看</div>
+                                </div>
+                                <div class="alarm_item top">
+                                    <div class="alarm_item_description">
+                                        <a id ="mark" target="_blank" href="/mark/mark_index.html">
+                                            指数查看
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a id ="pe" target="_blank" href="/pe/pe.html">
+                                            PE估值
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item top">
+                                    <div class="alarm_item_description">
+                                        <a id="pb" target="_blank" href="/pb/pb.html">
+                                            PB估值
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a href="/info/行业分类">
+                                            行业分类
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a href="/info/证券资料">
+                                            证券资料
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a href="/info/今日低估">
+                                            今日低估
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a href="/info/今日高估">
+                                            今日高估
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a href="/update">
+                                            更新数据
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col-xs-4 weather__city" style="width: 10%">
+                            <div class="card folded today">
+                                <div class="card_description">
+                                    <div class="title">参数设定</div>
+                                </div>
+                                <div class="alarm_item top">
+                                    <div class="alarm_item_description">
+                                        <a href="/">
+                                            HOME
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item top">
+                                    <div class="alarm_item_description">
+                                        <a href="/prophetparam">
+                                            PROPHET
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a href="/xgbparam">
+                                            XGB
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="alarm_item bottom">
+                                    <div class="alarm_item_description">
+                                        <a href="/lstmparam">
+                                            LSTM
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+            {% autoescape off %}
+            {{ monitor }}
+            {% endautoescape %}
+
+            {% autoescape off %}
+            {{ info }}
+            {% endautoescape %}
+
+            {% autoescape off %}
+            {{ chart }}
+            {% endautoescape %}
+
+            {% autoescape off %}
+            {{ param }}
+            {% endautoescape %}
+        <!-- END header -->
+        <!-- All JavaScript libraries -->
+		<script src="{% static 'js/jquery.min.js' %}"></script>
+		<script src="{% static 'js/bootstrap.min.js' %}"></script>
+		<!-- Custom JavaScript -->
+        <script src="{% static 'js/main.js' %}"></script>
+        <script src="{% static 'js/classie.js' %}"></script>
+            <script src="{% static 'js/selectFx.js' %}"></script>
+            <script>
+                (function() {
+                    [].slice.call( document.querySelectorAll( 'select.cs-select' ) ).forEach( function(el) {
+                        new SelectFx(el);
+                    } );
+                })();
+
+                function addValue(obj){
+                        $("input[name='code']").val($(obj).attr('value'));
+                }
+
+                $('.card').on('click', function(e) {
+                    $(this).toggleClass('folded unfolded');
+                });
+
+                document.onreadystatechange=function(){
+                    console.log(document.readyState);
+                    if(document.readyState=="complete"){
+                        $(".out").fadeOut();
+                    }
+                }
+            </script>
+    </body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="{% static 'img/st.ico' %}" rel="shortcut icon"/>
+    <script type="text/javascript" src="{% static 'assets/echarts.min.js' %}"></script>
+    <title>PE</title>
+</head>
+<body>
+{% autoescape off %}
+{{ pb }}
+{% endautoescape %}
+</body>
+</html>

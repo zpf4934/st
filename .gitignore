@@ -1,0 +1,8 @@
+*.out
+*.pyc
+.idea/
+.ipynb_checkpoints/
+mark_html/
+mark_cache/
+log/
+model/
