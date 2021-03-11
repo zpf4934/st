@@ -8,7 +8,7 @@ cftime==1.2.0
 chardet==3.0.4
 cmdstanpy==0.4.0
 convertdate==2.2.1
-cryptography==2.8
+cryptography==3.3.2
 cycler==0.10.0
 Cython==0.29.21
 Django==3.0.3
