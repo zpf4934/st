@@ -24,7 +24,7 @@ from core.getData import Data
 from fbprophet import Prophet
 from fbprophet.diagnostics import performance_metrics
 from pyecharts import options as opts
-from pyecharts.charts import Kline, Line, Bar, Grid, Scatter, EffectScatter, Page
+from pyecharts.charts import Kline, Line, Bar, Grid, Scatter, EffectScatter, Page, Tab
 from pyecharts.commons.utils import JsCode
 from pyecharts.globals import CurrentConfig
 from workalendar.asia import China
@@ -2059,7 +2059,7 @@ class PlotPE():
                     x = float(df.loc[index,percen])
                     y = float(df.loc[index,col])
                     base = (
-                        Scatter(init_opts=opts.InitOpts(width="97%", height="700px"))
+                        Scatter(init_opts=opts.InitOpts(width="1200px", height="700px"))
                             .add_xaxis([x])
                             .add_yaxis(code, [y], symbol_size=8, itemstyle_opts=opts.ItemStyleOpts(color="#FFFFFF"),
                                        label_opts=opts.LabelOpts(is_show=False))
@@ -2233,16 +2233,18 @@ class PlotPE():
         self.save_cache()
         if code == 'all':
             i = 0
-            chartPE = Page(layout=Page.SimplePageLayout, js_host='../core/resources/assets/')
-            chartPB = Page(layout=Page.SimplePageLayout, js_host='../core/resources/assets/')
-            while i < result.size:
-                chart = self.drew(result.loc[i:i + 800, ], 'PE')
+            # chartPE = Page(layout=Page.SimplePageLayout, js_host='../core/resources/assets/')
+            # chartPB = Page(layout=Page.SimplePageLayout, js_host='../core/resources/assets/')
+            chartPE = Tab(page_title="PE", js_host='../core/resources/assets/')
+            chartPB = Tab(page_title="PB", js_host='../core/resources/assets/')
+            while i < len(result):
+                chart = self.drew(result.loc[i:i + 100, ], 'PE')
                 if chart:
-                    chartPE.add(chart)
-                chart = self.drew(result.loc[i:i + 800, ], 'PB')
+                    chartPE.add(chart, 'PE')
+                chart = self.drew(result.loc[i:i + 100, ], 'PB')
                 if chart:
-                    chartPB.add(chart)
-                i += 801
+                    chartPB.add(chart, 'PB')
+                i += 101
             chartPE.render(os.path.join(PROJECT_PATH, 'mark_html/pe.html'))
             chartPB.render(os.path.join(PROJECT_PATH, 'mark_html/pb.html'))
             return result
