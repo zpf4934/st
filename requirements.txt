@@ -11,7 +11,7 @@ convertdate==2.2.1
 cryptography==2.8
 cycler==0.10.0
 Cython==0.29.21
-Django==3.0.3
+Django==3.1.12
 emoji==0.5.4
 ephem==3.7.7.1
 fbprophet==0.6
